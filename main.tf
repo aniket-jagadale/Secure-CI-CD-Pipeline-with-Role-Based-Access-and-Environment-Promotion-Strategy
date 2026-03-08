@@ -33,7 +33,7 @@ resource "aws_security_group" "web_sg" {
 
 # DEV SERVER
 resource "aws_instance" "dev" {
-  ami           = "ami-0f5ee92e2d63afc18"
+  ami           = "ami-0b6c6ebed2801a5cb"
   instance_type = "t2.micro"
   key_name      = var.key_name
 
@@ -46,7 +46,7 @@ resource "aws_instance" "dev" {
 
 # STAGING SERVER
 resource "aws_instance" "staging" {
-  ami           = "ami-0f5ee92e2d63afc18"
+  ami           = "ami-0b6c6ebed2801a5cb"
   instance_type = "t2.micro"
   key_name      = var.key_name
 
@@ -59,7 +59,7 @@ resource "aws_instance" "staging" {
 
 # PRODUCTION SERVER
 resource "aws_instance" "prod" {
-  ami           = "ami-0f5ee92e2d63afc18"
+  ami           = "ami-0b6c6ebed2801a5cb"
   instance_type = "t2.micro"
   key_name      = var.key_name
 
