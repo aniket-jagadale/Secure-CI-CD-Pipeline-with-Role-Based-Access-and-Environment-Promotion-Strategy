@@ -3,9 +3,9 @@ pipeline {
 
     environment {
 
-        DEV_SERVER = "ec2-user@DEV_IP"
-        STAGING_SERVER = "ec2-user@STAGING_IP"
-        PROD_SERVER = "ec2-user@PROD_IP"
+        DEV_SERVER = "18.212.81.157"
+        STAGING_SERVER = "98.81.243.170"
+        PROD_SERVER = "34.234.76.189"
 
         APP_DIR = "/var/www/html"
     }
