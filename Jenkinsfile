@@ -29,9 +29,7 @@ stages {
 
     stage('Unit Test') {
         steps {
-            sh '''
-            echo "Running sample tests"
-            '''
+            sh 'echo Running sample tests'
         }
     }
 
@@ -57,11 +55,19 @@ stages {
         }
     }
 
+    stage('Send Approval Email') {
+        steps {
+            emailext(
+                subject: "Production Deployment Approval Required",
+                body: "Please approve production deployment in Jenkins pipeline.",
+                to: "aniketjagad2005@gmail.com"
+            )
+        }
+    }
+
     stage('Production Approval') {
         steps {
-            timeout(time: 1, unit: 'HOURS') {
-                input message: "Approve deployment to PRODUCTION?", ok: "Deploy"
-            }
+            input message: "Approve deployment to PRODUCTION?", ok: "Deploy"
         }
     }
 
