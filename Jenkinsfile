@@ -3,9 +3,9 @@ pipeline {
 
     environment {
 
-        DEV_SERVER = "ec2-user@DEV_IP"##
-        STAGING_SERVER = "ec2-user@STAGING_IP"##
-        PROD_SERVER = "ec2-user@PROD_IP"##
+        DEV_SERVER = "ec2-user@DEV_IP"
+        STAGING_SERVER = "ec2-user@STAGING_IP"
+        PROD_SERVER = "ec2-user@PROD_IP"
 
         APP_DIR = "/var/www/html"
     }
@@ -14,7 +14,7 @@ pipeline {
 
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/aniket-jagadale/Secure-CI-CD-Pipeline-with-Role-Based-Access-and-Environment-Promotion-Strategy.git'##
+                git 'https://github.com/aniket-jagadale/Secure-CI-CD-Pipeline-with-Role-Based-Access-and-Environment-Promotion-Strategy.git'
             }
         }
 
