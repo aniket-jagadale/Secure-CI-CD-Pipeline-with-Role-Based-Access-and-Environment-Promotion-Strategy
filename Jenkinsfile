@@ -2,11 +2,9 @@ pipeline {
     agent any
 
     environment {
-
         DEV_SERVER = "18.212.81.157"
         STAGING_SERVER = "98.81.243.170"
         PROD_SERVER = "34.234.76.189"
-
         APP_DIR = "/var/www/html"
     }
 
@@ -22,7 +20,7 @@ pipeline {
             steps {
                 sh '''
                 echo "Building application"
-                mkdir build
+                mkdir -p build
                 cp index.html build/
                 '''
             }
@@ -30,45 +28,51 @@ pipeline {
 
         stage('Unit Test') {
             steps {
-                sh '''
-                echo "Running sample tests"
-                '''
+                sh 'echo "Running sample tests"'
             }
         }
 
         stage('Deploy to DEV') {
             steps {
-                sh """
-                ssh -o StrictHostKeyChecking=no $DEV_SERVER 'sudo yum install httpd -y'
-                ssh $DEV_SERVER 'sudo systemctl start httpd'
-                scp build/index.html $DEV_SERVER:$APP_DIR
-                """
+                sshagent(['ec2-key']) {
+                    sh '''
+                    ssh -o StrictHostKeyChecking=no ec2-user@$DEV_SERVER 'sudo yum install httpd -y'
+                    ssh ec2-user@$DEV_SERVER 'sudo systemctl start httpd'
+                    scp build/index.html ec2-user@$DEV_SERVER:$APP_DIR
+                    '''
+                }
             }
         }
 
         stage('Deploy to STAGING') {
             steps {
-                sh """
-                ssh -o StrictHostKeyChecking=no $STAGING_SERVER 'sudo yum install httpd -y'
-                ssh $STAGING_SERVER 'sudo systemctl start httpd'
-                scp build/index.html $STAGING_SERVER:$APP_DIR
-                """
+                sshagent(['ec2-key']) {
+                    sh '''
+                    ssh -o StrictHostKeyChecking=no ec2-user@$STAGING_SERVER 'sudo yum install httpd -y'
+                    ssh ec2-user@$STAGING_SERVER 'sudo systemctl start httpd'
+                    scp build/index.html ec2-user@$STAGING_SERVER:$APP_DIR
+                    '''
+                }
             }
         }
 
-        stage('Approval Required') {
+        stage('Production Approval') {
             steps {
-                input "Approve Production Deployment?"
+                timeout(time: 1, unit: 'HOURS') {
+                    input message: 'Approve deployment to PRODUCTION?', ok: 'Deploy Now'
+                }
             }
         }
 
         stage('Deploy to PRODUCTION') {
             steps {
-                sh """
-                ssh -o StrictHostKeyChecking=no $PROD_SERVER 'sudo yum install httpd -y'
-                ssh $PROD_SERVER 'sudo systemctl start httpd'
-                scp build/index.html $PROD_SERVER:$APP_DIR
-                """
+                sshagent(['ec2-key']) {
+                    sh '''
+                    ssh -o StrictHostKeyChecking=no ec2-user@$PROD_SERVER 'sudo yum install httpd -y'
+                    ssh ec2-user@$PROD_SERVER 'sudo systemctl start httpd'
+                    scp build/index.html ec2-user@$PROD_SERVER:$APP_DIR
+                    '''
+                }
             }
         }
     }
